@@ -1,0 +1,29 @@
+{
+  "name": "sprite-picture",
+  "description": "生成雪碧图实现",
+  "author": "funny002 <2048412928@qq.com>",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+  "vue": "^3.5.13"
+},
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silky-tone/SpritePicture.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/silky-tone/SpritePicture/issues"
+  },
+  "homepage": "https://github.com/silky-tone/SpritePicture#readme"
+}
