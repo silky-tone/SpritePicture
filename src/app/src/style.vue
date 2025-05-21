@@ -32,7 +32,7 @@ function handlerSize(size: number) {
 }
 
 function handlerStyle(item: any) {
-  return `.${props.name}.${item.name} {width: ${handlerSize(item.width)}; height: ${handlerSize(item.height)}; perspective-origin: ${handlerSize(-item.left)} ${handlerSize(-item.top)};}`;
+  return `.${props.name}.${item.name} {width: ${handlerSize(item.width)}; height: ${handlerSize(item.height)}; background-position: ${handlerSize(-item.left)} ${handlerSize(-item.top)};}`;
 }
 
 function download() {
