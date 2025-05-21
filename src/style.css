@@ -1,0 +1,74 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+body {
+  background-color: #fafafa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.var-app {
+  width: 900px;
+  padding: 16px;
+  margin: 32px auto 0;
+  border-radius: 16px;
+  background-color: #fff;
+  box-shadow: 0 0 3px #ddd;
+}
+
+.var-card {
+  width: 100%;
+  padding: 18px;
+  border-radius: 8px;
+  border: 2px dotted #ddd;
+}
+
+.var-drag-box {
+  height: 150px;
+  display: flex;
+  user-select: none;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.var-drag-box.is-drag {
+  border-color: var(--el-color-primary);
+}
+
+.var-form-box {
+  margin-top: 16px;
+}
+
+.var-files {
+  margin-top: 16px;
+}
+
+.var-files-item {
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.var-files-item-img {
+  height: 100%;
+}
+
+.var-content {
+  margin-top: 16px;
+}
+
+.var-canvas {
+  background-repeat: repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+}
+
+
+.xxx{
+  perspective-origin: 100px 200px;
+}
