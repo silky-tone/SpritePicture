@@ -1,6 +1,6 @@
 <template>
   <div class="var-style" ref="styleRef">
-    <div>.{{ props.name }} {background: url('sprite.png') no-repeat top left;}</div>
+    <div>.{{ props.name }} {background: url('sprite.png') no-repeat top left; background-size: {{handlerSize(props.width)}} {{handlerSize(props.height)}}; }</div>
     <template v-for="item of props.data">
       <div>{{ handlerStyle(item) }}</div>
     </template>
@@ -12,14 +12,18 @@
 import { ref, toValue } from 'vue';
 
 interface Props {
-  unit: 'px' | 'rem';
-  convertUnit: number;
   data: any;
   name: string;
+  width: number;
+  height: number;
+  unit: 'px' | 'rem';
+  convertUnit: number;
 }
 
 const styleRef = ref();
 const props = withDefaults(defineProps<Props>(), {
+  width: () => 0,
+  height: () => 0,
   unit: () => 'px',
   data: () => ([]),
   name: () => 'sprite',
@@ -28,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 function handlerSize(size: number) {
   if (size === 0) return '0';
-  return props.unit === 'rem' ? `${size * props.convertUnit}${props.unit}` : `${size}${props.unit}`;
+  return props.unit === 'rem' ? `${size / props.convertUnit}${props.unit}` : `${size}${props.unit}`;
 }
 
 function handlerStyle(item: any) {

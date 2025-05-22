@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const canvasRef = ref();
+const emits = defineEmits(['size']);
 
 function init(imagesInfo: Array<ImageInfo>) {
   const canvas = toValue(canvasRef)!;
@@ -26,6 +27,7 @@ function init(imagesInfo: Array<ImageInfo>) {
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
   const ctx = canvas.getContext('2d')!;
+  emits('size', {width: canvasWidth, height: canvasHeight});
 
   // 清空画布
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);

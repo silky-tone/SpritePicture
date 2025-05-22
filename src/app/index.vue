@@ -42,10 +42,18 @@
   <div class="var-content var-card" v-show="data.packingInfo">
     <el-tabs model-value="canvas">
       <el-tab-pane label="精灵图" name="canvas">
-        <app-canvas ref="canvasRef" :type="data.form.outType" :color="data.form.color"/>
+        <app-canvas ref="canvasRef" :type="data.form.outType" :color="data.form.color" @size="onCanvasSize"/>
       </el-tab-pane>
       <el-tab-pane label="样式" name="css">
-        <app-style ref="styleRef" :data="data.packingInfo" :name="data.form.name" :convert-unit="data.form.convertUnit" :unit="data.form.unit"/>
+        <app-style
+            ref="styleRef"
+            :name="data.form.name"
+            :unit="data.form.unit"
+            :data="data.packingInfo"
+            :width="data.canvasSize.width"
+            :height="data.canvasSize.height"
+            :convert-unit="data.form.convertUnit"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -76,8 +84,9 @@ const data = reactive<Record<string, any>>({
     color: 'rgba(0, 0, 0, 0)',
   },
   files: [],
-  packingInfo: null,
   fileImageMap: {},
+  packingInfo: null,
+  canvasSize: {width: 0, height: 0},
 });
 
 function handFileName(file: File) {
@@ -145,5 +154,9 @@ function onCancel() {
 function onDownload() {
   toValue(styleRef).download();
   toValue(canvasRef).download();
+}
+
+function onCanvasSize(size: { width: number, height: number }) {
+  data.canvasSize = size;
 }
 </script>
