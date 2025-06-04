@@ -10,9 +10,11 @@ import { ref, toValue } from 'vue';
 interface Props {
   color?: string;
   type?: string;
+  name?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  name: () => 'sprite',
   type: () => 'png',
 });
 
@@ -47,7 +49,7 @@ function download() {
   const url = toValue(canvasRef).toDataURL(`image/${props.type}`);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'sprite.png';
+  a.download = `${props.name}.png`;
   a.click();
   URL.revokeObjectURL(url);
   a.remove();

@@ -1,6 +1,6 @@
 <template>
   <div class="var-style" ref="styleRef">
-    <div>.{{ props.name }} {background: url('sprite.png') no-repeat top left; background-size: {{handlerSize(props.width)}} {{handlerSize(props.height)}}; }</div>
+    <div>.{{ props.name }} {background: url('{{ props.name }}.png') no-repeat top left; background-size: {{ handlerSize(props.width) }} {{ handlerSize(props.height) }}; }</div>
     <template v-for="item of props.data">
       <div>{{ handlerStyle(item) }}</div>
     </template>
@@ -45,7 +45,7 @@ function download() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'sprite.css';
+  a.download = `${props.name}.css`;
   a.click();
   URL.revokeObjectURL(url);
   a.remove();

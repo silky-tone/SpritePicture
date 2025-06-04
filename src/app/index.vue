@@ -28,8 +28,8 @@
   <div class="var-form-box var-card">
     <app-form v-model="data.form">
       <el-col :span="12">
-        <el-form-item label="样式名称" prop="name">
-          <el-input v-model="data.form.name" placeholder="请输入单位"/>
+        <el-form-item label="统一名称" prop="name">
+          <el-input v-model="data.form.name" placeholder="请输入统一名称"/>
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -42,7 +42,7 @@
   <div class="var-content var-card" v-show="data.packingInfo">
     <el-tabs model-value="canvas">
       <el-tab-pane label="精灵图" name="canvas">
-        <app-canvas ref="canvasRef" :type="data.form.outType" :color="data.form.color" @size="onCanvasSize"/>
+        <app-canvas ref="canvasRef" :type="data.form.outType" :name="data.form.name" :color="data.form.color" @size="onCanvasSize"/>
       </el-tab-pane>
       <el-tab-pane label="样式" name="css">
         <app-style
@@ -152,6 +152,7 @@ function onCancel() {
 }
 
 function onDownload() {
+  if (!data.form.name) return ElMessage.warning('请先填写统一名称');
   toValue(styleRef).download();
   toValue(canvasRef).download();
 }
