@@ -21,7 +21,7 @@ export function createInput(opt?: Partial<InputOptions>) {
     dom.webkitdirectory = opt?.webkitdirectory || false;
     dom.multiple = opt?.multiple || false;
     dom.type = 'file';
-    dom.onchange = function () {
+    dom.onchange = function() {
       const files = handleFile(dom.files as FileList);
       // // 未选择文件夹，选中的文件加入验证
       if (accept.length > 0) {
@@ -51,7 +51,7 @@ export function createInput(opt?: Partial<InputOptions>) {
       success(files);
       dom.remove(); // 移除
     };
-    dom.onblur = function () {
+    dom.onblur = function() {
       console.log(dom.files);
     };
     dom.click(); // 激活
@@ -59,45 +59,101 @@ export function createInput(opt?: Partial<InputOptions>) {
 }
 
 export function getFile(accept?: string[], multiple?: boolean, filtration: string[] | boolean = true) {
-  return createInput({accept, multiple, filtration});
+  return createInput({ accept, multiple, filtration });
 }
 
 export function getFolder(accept?: string[], multiple?: boolean, filtration: string[] | boolean = true) {
-  return createInput({accept, multiple, filtration, webkitdirectory: true});
+  return createInput({ accept, multiple, filtration, webkitdirectory: true });
 }
 
-export function getDragFile({dataTransfer}: { dataTransfer: DataTransfer }): Array<File> {
+export async function getDragFile({ dataTransfer }: { dataTransfer: DataTransfer }): Promise<File[]> {
   const items = dataTransfer.items;
   const files: File[] = [];
 
-  function traverseFileTree(item: any, path?: string) {
-    path = path || '';
-    if (item.isFile) {
-      item.file(function (file: File) {
-        files.push(file);
+  // 递归读取目录
+  const processEntry = async (entry: FileSystemEntry, path = '') => {
+    if (entry.isFile) {
+      // 处理文件
+      const file = await new Promise<File>((resolve) => {
+        (entry as FileSystemFileEntry).file(resolve);
       });
-    } else if (item.isDirectory) {
-      const directoryReader = item.createReader();
-      directoryReader.readEntries(function (entries: string | any[]) {
-        for (let i = 0; i < entries.length; i++) {
-          traverseFileTree(entries[i], path + item.name + '/');
-        }
+      // 保留相对路径信息
+      if (path) {
+        Object.defineProperty(file, 'webkitRelativePath', {
+          value: path + file.name,
+        });
+      }
+      files.push(file);
+    } else if (entry.isDirectory) {
+      // 处理目录
+      const dirReader = (entry as FileSystemDirectoryEntry).createReader();
+      const subEntries = await new Promise<FileSystemEntry[]>((resolve, reject) => {
+        const entries: FileSystemEntry[] = [];
+        const readNextBatch = () => {
+          dirReader.readEntries((batch) => {
+            if (batch.length > 0) {
+              entries.push(...batch);
+              readNextBatch(); // 继续读取下一批次
+            } else {
+              resolve(entries); // 读取完成
+            }
+          }, reject);
+        };
+        readNextBatch();
       });
+
+      // 递归处理子项
+      const newPath = `${path}${entry.name}/`;
+      await Promise.all(
+        subEntries.map((subEntry) => processEntry(subEntry, newPath)),
+      );
     }
-  }
+  };
 
+  // 遍历所有拖拽项
+  const entries: FileSystemEntry[] = [];
   for (let i = 0; i < items.length; i++) {
-    const item = items[i].webkitGetAsEntry();
-    if (item) traverseFileTree(item);
+    const entry = items[i].webkitGetAsEntry?.() || null;
+    if (entry) entries.push(entry);
   }
 
+  // 并行处理所有条目
+  await Promise.all(entries.map((entry) => processEntry(entry)));
   return files;
 }
+
+// export function getDragFile({dataTransfer}: { dataTransfer: DataTransfer }): Array<File> {
+//   const items = dataTransfer.items;
+//   const files: File[] = [];
+//
+//   function traverseFileTree(item: any, path?: string) {
+//     path = path || '';
+//     if (item.isFile) {
+//       item.file(function (file: File) {
+//         files.push(file);
+//       });
+//     } else if (item.isDirectory) {
+//       const directoryReader = item.createReader();
+//       directoryReader.readEntries(function (entries: string | any[]) {
+//         for (let i = 0; i < entries.length; i++) {
+//           traverseFileTree(entries[i], path + item.name + '/');
+//         }
+//       });
+//     }
+//   }
+//
+//   for (let i = 0; i < items.length; i++) {
+//     const item = items[i].webkitGetAsEntry();
+//     if (item) traverseFileTree(item);
+//   }
+//
+//   return files;
+// }
 
 export function FileToBase64(file: File): Promise<string> {
   return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onload = function () {
+    reader.onload = function() {
       resolve(reader.result as string);
     };
     reader.readAsDataURL(file);
@@ -111,16 +167,16 @@ export function base64ToFile(filename: string, base64: string): File {
   for (let i = 0, len = value.length; i < len; i++) {
     buffer[i] = value.charCodeAt(i);
   }
-  return new File([buffer], filename, {type: mimeType});
+  return new File([buffer], filename, { type: mimeType });
 }
 
 export function toImage(value: File | string): Promise<HTMLImageElement> {
   const image = new Image();
   return new Promise(async (resolve, reject) => {
-    image.onload = function () {
+    image.onload = function() {
       resolve(image);
     };
-    image.onerror = function () {
+    image.onerror = function() {
       reject(new Error('Failed to load image'));
     };
     image.src = typeof value === 'string' ? value : await FileToBase64(value);

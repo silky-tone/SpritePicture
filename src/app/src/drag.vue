@@ -5,12 +5,12 @@
   </div>
 </template>
 
-<script lang="ts">export default {name: 'AppDrag'};</script>
+<script lang="ts">export default { name: 'AppDrag' };</script>
 <script setup lang="ts">
 import { getDragFile, getFile } from '../../utils';
 import { reactive } from 'vue';
 
-const data = reactive({drag: false});
+const data = reactive({ drag: false });
 
 function onDragover(event: DragEvent) {
   event.stopPropagation();
@@ -31,7 +31,11 @@ function onGetFiles() {
 }
 
 function onDrop(event: DragEvent) {
-  emits('drop', getDragFile(event as any));
+  event.stopPropagation();
+  event.preventDefault();
   data.drag = false;
+  getDragFile(event as any).then(files => {
+    emits('drop', files);
+  });
 }
 </script>
