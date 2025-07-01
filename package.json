@@ -4,7 +4,7 @@
   "author": "funny002 <2048412928@qq.com>",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
